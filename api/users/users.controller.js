@@ -15,7 +15,7 @@ module.exports = {
                 return
             }
             if (!result) {
-                return res.json.status(200)({
+                return res.json({
                     success: -1,
                     messeage: "کاربری با این شماره پیدا نشد",
 
