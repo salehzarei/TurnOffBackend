@@ -2,7 +2,7 @@ const axios = require('axios')
 const Joi = require('joi')
 var otpGenerator = require('otp-generator')
 const FormData = require('form-data')
-const { getUserByPhoneNumber, addNewUser, addNewOTP, checkOTP , updateUserData } = require('./users.service')
+const { getUserByPhoneNumber, getUserByToken, addNewUser, addNewOTP, checkOTP , updateUserData } = require('./users.service')
 
 module.exports = {
     getUserByPhoneNumber: (req, res) => {
@@ -65,6 +65,38 @@ module.exports = {
             })
         })
     },
+
+    getUserData : (req,res)=>{
+        const body = req.body
+        getUserByToken(body.turnofftoken , (err,result)=>{
+            if(err){
+                console.log(err)
+                return res.status(500).json({
+                    success : 0,
+                    message:'خطا در بازیابی اطلاعات کاربر'
+                })
+            } 
+            
+            if(!result){
+                console.log(err)
+                return res.status(500).json({
+                    success : 0,
+                    message:'توکن نامعتبر است یا کاربر حذف شده'
+                })
+            } 
+            
+            
+            return res.status(200).json({
+                success : 1,
+                message: "کاربر با موفقیت یافت شد",
+                data : result
+            })
+        })
+
+
+    },
+
+
     addNewUser: (req, res) => {
         const body = req.body
         addNewUser(body, (err, result) => {
@@ -155,11 +187,11 @@ module.exports = {
                 })
                 
             }
-            return res.status(500).json({
-                success: 0,
-                message: 'احراز هویت ناموفق بود',
-                data: result
-            })
+            // return res.status(500).json({
+            //     success: 0,
+            //     message: 'احراز هویت ناموفق بود',
+            //     data: result
+            // })
 
         })
 

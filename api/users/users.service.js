@@ -15,6 +15,17 @@ module.exports = {
         })
     },
 
+    getUserByToken: (token, callback) => {
+        pool.query('SELECT * FROM `users` WHERE `userToken` = ?', [token], (err, result, fields) => {
+
+            if (err) {
+                return callback(err)
+            }
+
+            return callback(null, result[0])
+        })
+    },
+
 
     addNewUser: (data, callback) => {
         var notetype = JSON.stringify(data.notetype);
