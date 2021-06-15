@@ -1,14 +1,28 @@
 const axios = require('axios')
+const Joi = require('joi')
+var otpGenerator = require('otp-generator')
 const FormData = require('form-data')
-const { getUserByPhoneNumber, addNewUser } = require('./users.service')
+const { getUserByPhoneNumber, addNewUser, addNewOTP, checkOTP , updateUserData } = require('./users.service')
 
 module.exports = {
     getUserByPhoneNumber: (req, res) => {
         const phone = req.params.phone
+        // const schema = Joi.object({ phone: Joi.number() })
+
+        // try {
+        //     const value = schema.validate({});
+        //     console.log(value)
+        // }
+        // catch (err) { }
+
+
+
         getUserByPhoneNumber(phone, (err, result) => {
+            const otp = otpGenerator.generate(4, { upperCase: false, specialChars: false, alphabets: false });
+            console.log(otp)
             const form = new FormData()
             form.append('receptor', String(phone));
-            form.append('token', '1111');
+            form.append('token', otp);
             form.append('template', 'verify')
             if (err) {
                 console.log(err)
@@ -17,10 +31,19 @@ module.exports = {
             if (!result) {
                 return res.json({
                     success: -1,
-                    messeage: "کاربری با این شماره پیدا نشد",
+                    messeage: "کاربری با این شماره پیدا نشد کد احراز ارسال گردید",
 
 
                 }),
+
+
+                    addNewOTP({ phone: phone, otp: otp }, (err, result) => {
+                        if (err) {
+                            console.log(err)
+                        }
+                        console.log(result)
+
+                    }),
 
                     axios.post('https://api.kavenegar.com/v1/5265387043523979774A6E2F42597A4C6768463771336F68772B78694556646957764D6A2B656B667364773D/verify/lookup.json', form, {
                         headers: form.getHeaders()
@@ -31,7 +54,8 @@ module.exports = {
                         })
                         .catch(function (error) {
                             console.log(error);
-                        });
+                        }
+                        );
 
 
             }
@@ -58,6 +82,87 @@ module.exports = {
 
             })
         })
+    },
+
+    updateUser:(req,res)=>{
+        const body = req.body
+        updateUserData(body,(err,result)=>{
+            if(err){
+                console.log(err)
+                return res.status(500).json({
+                    success : 0,
+                    message:'به روزرسانی با خطا مواجه شد'
+                })
+            }
+            if(result.affectedRows == 0){
+                    return res.status(500).json({
+                    success : 0,
+                    message:'توکن اشتباه است یا ثبت نشده'
+                })
+            }
+            return res.status(200).json({
+                success : 1,
+                message:"به روز رسانی با موفقیت انجام شد",
+                data : result
+            })
+        })
+
+    },
+
+    checkOTP: (req, res) => {
+        const body = req.body
+        checkOTP(body, (err, result) => {
+            if (err) {
+                console.log(err)
+                return res.status(500).json({
+                    success: 0,
+                    message: 'احراز هویت ناموفق بود'
+                })
+            }
+            if (result.length != []) {
+                // ثبت نام کاربر اولیه با اطلاعات خام
+
+                const newUserBody =
+                {
+                    "userphone": result[0].phone,
+                    "status": true,
+                    "notetype": [
+                        "notification"
+                    ],
+                    "selectedcompany": [
+                        "bargh",
+                    ],
+                    "charge": 0,
+                    "remindtime": 60,
+                    "addresses": []
+
+                }
+
+                addNewUser(newUserBody, (err, result) => {
+                    if (err) {
+                        console.log(err)
+                        return res.status(500).json({
+                            success: 0,
+                            message: 'خطا در ذخیر سازی کاربر جدید'
+                        })
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: "کاربر با موفقیت اضافه شد",
+                        data: result
+
+                    })
+                })
+                
+            }
+            return res.status(500).json({
+                success: 0,
+                message: 'احراز هویت ناموفق بود',
+                data: result
+            })
+
+        })
+
     }
 
 }
