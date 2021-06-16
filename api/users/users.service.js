@@ -68,6 +68,7 @@ module.exports = {
     },
 
     updateUserData: (data, callback) => {
+        console.log(data)
         // به روز رسانی اطلاعات کاربری
         var notetype = JSON.stringify(data.notetype);
         var selectedcompany = JSON.stringify(data.selectedcompany)
@@ -80,7 +81,7 @@ module.exports = {
             data.charge,
             data.remindtime,
             addresses,
-            data.turnofftoken
+            data.userToken
         ], (error, result, fields) => {
             if (error) {
                 return callback(error)
