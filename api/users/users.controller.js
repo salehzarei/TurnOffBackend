@@ -2,7 +2,7 @@ const axios = require('axios')
 const Joi = require('joi')
 var otpGenerator = require('otp-generator')
 const FormData = require('form-data')
-const { getUserByPhoneNumber, getUserByToken, addNewUser, addNewOTP, checkOTP , updateUserData } = require('./users.service')
+const { getUserByPhoneNumber, getUserByToken, addNewUser, addNewOTP, checkOTP, updateUserData } = require('./users.service')
 
 module.exports = {
     getUserByPhoneNumber: (req, res) => {
@@ -66,30 +66,30 @@ module.exports = {
         })
     },
 
-    getUserData : (req,res)=>{
+    getUserData: (req, res) => {
         const body = req.body
-        getUserByToken(body.turnofftoken , (err,result)=>{
-            if(err){
+        getUserByToken(body.turnofftoken, (err, result) => {
+            if (err) {
                 console.log(err)
                 return res.status(500).json({
-                    success : 0,
-                    message:'خطا در بازیابی اطلاعات کاربر'
+                    success: 0,
+                    message: 'خطا در بازیابی اطلاعات کاربر'
                 })
-            } 
-            
-            if(!result){
+            }
+
+            if (!result) {
                 console.log(err)
                 return res.status(500).json({
-                    success : 0,
-                    message:'توکن نامعتبر است یا کاربر حذف شده'
+                    success: 0,
+                    message: 'توکن نامعتبر است یا کاربر حذف شده'
                 })
-            } 
-            
-            
+            }
+
+
             return res.status(200).json({
-                success : 1,
+                success: 1,
                 message: "کاربر با موفقیت یافت شد",
-                data : result
+                data: result
             })
         })
 
@@ -116,26 +116,26 @@ module.exports = {
         })
     },
 
-    updateUser:(req,res)=>{
+    updateUser: (req, res) => {
         const body = req.body
-        updateUserData(body,(err,result)=>{
-            if(err){
+        updateUserData(body, (err, result) => {
+            if (err) {
                 console.log(err)
                 return res.status(500).json({
-                    success : 0,
-                    message:'به روزرسانی با خطا مواجه شد'
+                    success: 0,
+                    message: 'به روزرسانی با خطا مواجه شد'
                 })
             }
-            if(result.affectedRows == 0){
-                    return res.status(500).json({
-                    success : 0,
-                    message:'توکن اشتباه است یا ثبت نشده'
+            if (result.affectedRows == 0) {
+                return res.status(500).json({
+                    success: 0,
+                    message: 'توکن اشتباه است یا ثبت نشده'
                 })
             }
             return res.status(200).json({
-                success : 1,
-                message:"به روز رسانی با موفقیت انجام شد",
-                data : result
+                success: 1,
+                message: "به روز رسانی با موفقیت انجام شد",
+                data: result
             })
         })
 
@@ -185,13 +185,17 @@ module.exports = {
 
                     })
                 })
-                
+
             }
-            // return res.status(500).json({
-            //     success: 0,
-            //     message: 'احراز هویت ناموفق بود',
-            //     data: result
-            // })
+            // اگر کد پیدا نشد یعنی اشتباه است پس
+            if (result.length == []) {
+                return res.status(500).json({
+                    success: 0,
+                    message: 'کد احراز هویت صحیح نیست،مجددا تلاش کنید',
+                    data: result
+                })
+            }
+
 
         })
 
