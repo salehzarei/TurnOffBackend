@@ -2,7 +2,12 @@ const pool = require('../../config/database')
 const jwt = require('jsonwebtoken')
 
 
+
+
+
 module.exports = {
+
+
 
     getUserByPhoneNumber: (phone, callback) => {
         pool.query('SELECT * FROM `users` WHERE `userphone` = ?', [phone], (err, result, fields) => {
@@ -86,6 +91,19 @@ module.exports = {
             if (error) {
                 return callback(error)
             }
+            return callback(null, result)
+        })
+    },
+
+    getAdsData: (data, callback) => {
+        console.log(data)
+        // لود اطلاعات بنر تبلیغاتی
+        pool.query('SELECT * FROM `ads`', (err, result, fields) => {
+
+            if (err) {
+                return callback(err)
+            }
+
             return callback(null, result)
         })
     }
