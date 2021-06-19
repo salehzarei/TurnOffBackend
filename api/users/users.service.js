@@ -37,7 +37,7 @@ module.exports = {
         var selectedcompany = JSON.stringify(data.selectedcompany)
         var addresses = JSON.stringify(data.addresses)
         pool.query(
-            'INSERT INTO `users` (`userphone`, `status`, `notetype`, `selectedcompany`, `charge`, `remindtime` , `addresses` , `userToken`) VALUES (?,?,?,?,?,?,?,?)', [
+            'INSERT INTO `users` (`userphone`, `status`, `notetype`, `selectedcompany`, `charge`, `remindtime` , `addresses` , `userToken`, `firbaseToken`) VALUES (?,?,?,?,?,?,?,?,?)', [
             data.userphone,
             data.status,
             notetype,
@@ -46,6 +46,7 @@ module.exports = {
             data.remindtime,
             addresses,
             jwt.sign({ userToken: data.userphone }, 'turnofftoken'),
+            ""
             // 'register new user'
         ], (error, result, fields) => {
             if (error) {
