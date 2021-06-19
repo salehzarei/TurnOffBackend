@@ -78,7 +78,7 @@ module.exports = {
         var notetype = JSON.stringify(data.notetype);
         var selectedcompany = JSON.stringify(data.selectedcompany)
         var addresses = JSON.stringify(data.addresses)
-        pool.query('UPDATE `users` SET `userphone` = ?, `status` = ?, `notetype` = ?, `selectedcompany` = ?, `charge` = ? , `remindtime` = ?  , `addresses`= ?  WHERE `userToken` = ?', [
+        pool.query('UPDATE `users` SET `userphone` = ?, `status` = ?, `notetype` = ?, `selectedcompany` = ?, `charge` = ? , `remindtime` = ?  , `addresses`= ? , `firbaseToken`= ?  WHERE `userToken` = ?', [
             data.userphone,
             data.status,
             notetype,
@@ -86,7 +86,9 @@ module.exports = {
             data.charge,
             data.remindtime,
             addresses,
+            data.firbaseToken,
             data.userToken
+            
         ], (error, result, fields) => {
             if (error) {
                 return callback(error)
