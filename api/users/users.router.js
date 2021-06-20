@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const {getUserByPhoneNumber, getUserData , addNewUser ,checkOTP , updateUser ,getAdsData , sendNotificatio} = require('./users.controller')
+const {getUserByPhoneNumber, getUserData , addNewUser ,checkOTP , updateUser ,getAdsData} = require('./users.controller')
+const {sendNotificatio} = require('../../functions/sendnotification')
 
 
 router.get('/users/:phone',getUserByPhoneNumber)

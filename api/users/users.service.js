@@ -1,13 +1,19 @@
 const pool = require('../../config/database')
 const jwt = require('jsonwebtoken')
 
-
-
-
-
 module.exports = {
 
+    getAllUserFireBaseToken: (res, callback) => {
+        pool.query('SELECT `firbaseToken` FROM `users` ', (err, rows, fields) => {
 
+            if (err) {
+                return callback(err)
+            }
+
+            return callback(null, rows)
+        })
+
+    },
 
     getUserByPhoneNumber: (phone, callback) => {
         pool.query('SELECT * FROM `users` WHERE `userphone` = ?', [phone], (err, result, fields) => {
@@ -89,7 +95,7 @@ module.exports = {
             addresses,
             data.firbaseToken,
             data.userToken
-            
+
         ], (error, result, fields) => {
             if (error) {
                 return callback(error)

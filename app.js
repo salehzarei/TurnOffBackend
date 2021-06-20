@@ -4,10 +4,17 @@ const express = require('express')
 const app = express()
 const usersRouter = require('./api/users/users.router')
 
+
+// اجرای مکرر بازخوانی اطلاعات قطعی برق
+const doajob = require('./functions/datacheck')
+doajob.dosomejob()
+
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use('/', usersRouter)
+
 
 
 app.listen(process.env.APP_PORT, () => {
