@@ -9,8 +9,8 @@ module.exports = {
             if (err) {
                 return callback(err)
             }
-
-            return callback(null, rows)
+         
+            return callback(rows, err)
         })
 
     },

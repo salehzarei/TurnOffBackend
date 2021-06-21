@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {getUserByPhoneNumber, getUserData , addNewUser ,checkOTP , updateUser ,getAdsData} = require('./users.controller')
-const {sendNotificatio} = require('../../functions/sendnotification')
+const {sendNotificatio , sendCastNotification} = require('../../functions/sendnotification')
 
 
 router.get('/users/:phone',getUserByPhoneNumber)
@@ -11,6 +11,7 @@ router.post('/users/checkotp' , checkOTP)
 router.post('/users/update' , updateUser)
 router.get('/ads',getAdsData)
 router.post('/sendNotif',sendNotificatio)
+router.post('/sendCastNotif' , sendCastNotification)
 
 
 
