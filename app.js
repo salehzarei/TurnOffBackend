@@ -7,7 +7,9 @@ const usersRouter = require('./api/users/users.router')
 
 // اجرای مکرر بازخوانی اطلاعات قطعی برق
 const doajob = require('./functions/datacheck')
+const checkUserData =  require('./functions/checkUserData')
 doajob.dosomejob()
+checkUserData.fetchUserData()
 
 
 app.use(express.json())

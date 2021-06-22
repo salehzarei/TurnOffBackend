@@ -95,7 +95,7 @@ module.exports = {
             console.log(data)
             var payloadMulticast = {
 
-                registration_ids: [data],
+                registration_ids: data,
                 data: {
                     url: "news"
                 },
@@ -107,10 +107,8 @@ module.exports = {
                 if (err) {
                     console.log(err)
                 } else {
-                    if (response.failureCount == 1)
-                        console.log("Send Message Failure")
-                    if (response.failureCount == 0)
-                        console.log("Message Send Succesfully")
+                    console.log(response.results[0].error)
+
                 }
             });
             resolve()

@@ -4,9 +4,9 @@ const { getAllUserFireBaseToken } = require('../api/users/users.service')
 const { sendCast } = require("../functions/sendnotification")
 
 const scheduler = new ToadScheduler()
-var rowsString = "";
+var rowsString = [];
 //const task = new Task('simple task', () => { console.log("Task!") })
-const task = new Task('بازخوانی اطلاعات جدول قطعی', () => {
+const task = new Task('ارسال پوشنتیفیکشن به همه اعضا', () => {
     console.log("Task!"),
         getAllUserFireBaseToken(null, (rows, err) => {
             if (err) {
@@ -14,20 +14,19 @@ const task = new Task('بازخوانی اطلاعات جدول قطعی', () =>
             }
             // تبدیل datarow به  object
             var resultArray = Object.values(JSON.parse(JSON.stringify(rows)))
-
+            rowsString = []
             for (var i = 0; i < resultArray.length; i++) {
                 var row = rows[i];
-                if (i == 0) rowsString = row.firbaseToken;
-                else rowsString += "," + row.firbaseToken;
-            }
+             rowsString.push(row.firbaseToken)
+             }
 
             /// ارسال نوتیفیکشن خودکار
             // sendCastNotification(JSON.parse(`{"body":{"registration_ids":[${JSON.stringify(rowsString)}]}}`) )
-            sendCast(JSON.stringify(rowsString))
+            sendCast(rowsString)
         });
 })
 
-const job = new SimpleIntervalJob({ seconds: 5, }, task)
+const job = new SimpleIntervalJob({ minutes: 30, }, task)
 
 var methods = {
     dosomejob: () => {
