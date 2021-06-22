@@ -1,7 +1,7 @@
 const { json } = require('express');
 const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler')
 const { getAllUserFireBaseToken } = require('../api/users/users.service')
-const { sendCastNotification } = require("../functions/sendnotification")
+const { sendCast } = require("../functions/sendnotification")
 
 const scheduler = new ToadScheduler()
 var rowsString = "";
@@ -20,13 +20,14 @@ const task = new Task('بازخوانی اطلاعات جدول قطعی', () =>
                 if (i == 0) rowsString = row.firbaseToken;
                 else rowsString += "," + row.firbaseToken;
             }
-              
+
             /// ارسال نوتیفیکشن خودکار
-         //  sendCastNotification(JSON.parse(`{"body":{"registration_ids":[${JSON.stringify(rowsString)}]}}`) )
+            // sendCastNotification(JSON.parse(`{"body":{"registration_ids":[${JSON.stringify(rowsString)}]}}`) )
+            sendCast(JSON.stringify(rowsString))
         });
 })
 
-const job = new SimpleIntervalJob({ minutes: 60, }, task)
+const job = new SimpleIntervalJob({ seconds: 5, }, task)
 
 var methods = {
     dosomejob: () => {

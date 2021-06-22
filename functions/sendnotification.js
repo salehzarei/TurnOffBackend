@@ -65,17 +65,17 @@ module.exports = {
                 console.log(err)
             } else {
                 if (response.failureCount == 1) {
-                     res.json({
+                    res.json({
                         success: 0,
                         messeage: "پیام به درستی ارسال نشد",
                         data: response
                     })
-                   
+
 
                 }
 
                 if (response.failureCount == 0)
-                     res.json({
+                    res.json({
                         success: 1,
                         messeage: "پیام با موفقیت ارسال شده",
                         data: response
@@ -86,6 +86,35 @@ module.exports = {
 
 
         });
+        return null
+
+    },
+
+    sendCast(data) {
+        return new Promise((resolve, reject) => {
+            console.log(data)
+            var payloadMulticast = {
+
+                registration_ids: [data],
+                data: {
+                    url: "news"
+                },
+                notification: { title: 'اعلان قطعی برق', body: 'سلام براساس برنامه امروز ساعت 14:30 به مدیت یک ساعت برق محله شما قطع خواهد شد', sound: "default", badge: "1" }
+            };
+            fcm.send(payloadMulticast, function (err, response) {
+                //  callbackLog('sendMulticast', err, res);
+                console.log(response)
+                if (err) {
+                    console.log(err)
+                } else {
+                    if (response.failureCount == 1)
+                        console.log("Send Message Failure")
+                    if (response.failureCount == 0)
+                        console.log("Message Send Succesfully")
+                }
+            });
+            resolve()
+        }, 100)
 
     }
 }
